@@ -128,13 +128,24 @@ func (wt *WatchTowerConfiguration) UpdateUsers(w http.ResponseWriter, r *http.Re
 
 	md5HashPass := MD5HashPassword(req.Password)
 
-	err = database.UpdateUser(wt.WatchtowerDB, req.ID, req.Username, md5HashPass, req.IsAdmin)
-	if err != nil {
-		respondJSON(w, 200, &UpdateResponse{
-			Success: false,
-			Message: err.Error(),
-		})
-		return
+	if req.Password == "" {
+		err = database.UpdateUserWithOutPassword(wt.WatchtowerDB, req.ID, req.Username, req.IsAdmin)
+		if err != nil {
+			respondJSON(w, 200, &UpdateResponse{
+				Success: false,
+				Message: err.Error(),
+			})
+			return
+		}
+	} else {
+		err = database.UpdateUserWithPassword(wt.WatchtowerDB, req.ID, req.Username, md5HashPass, req.IsAdmin)
+		if err != nil {
+			respondJSON(w, 200, &UpdateResponse{
+				Success: false,
+				Message: err.Error(),
+			})
+			return
+		}
 	}
 
 	respondJSON(w, 200, &UpdateResponse{

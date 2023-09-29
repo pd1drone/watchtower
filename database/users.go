@@ -11,6 +11,10 @@ type Users struct {
 	IsAdmin  bool   `json:"IsAdmin"`
 }
 
+type UsersArray struct {
+	UsersArray []*Users `json:"UsersArray"`
+}
+
 func CreateUser(db sqlx.Ext, username string, password string, isadmin bool) error {
 
 	_, err := db.Exec(`INSERT INTO Users (
@@ -41,7 +45,7 @@ func DeleteUser(db sqlx.Ext, ID int64) error {
 	return nil
 }
 
-func UpdateUser(db sqlx.Ext, ID int64, username string, password string, isadmin bool) error {
+func UpdateUserWithPassword(db sqlx.Ext, ID int64, username string, password string, isadmin bool) error {
 
 	_, err := db.Exec(`UPDATE Users SET 
 		Username =?,
@@ -60,7 +64,24 @@ func UpdateUser(db sqlx.Ext, ID int64, username string, password string, isadmin
 	return nil
 }
 
-func ReadUsers(db sqlx.Ext) ([]*Users, error) {
+func UpdateUserWithOutPassword(db sqlx.Ext, ID int64, username string, isadmin bool) error {
+
+	_, err := db.Exec(`UPDATE Users SET 
+		Username =?,
+		IsAdmin = ? WHERE ID= ?`,
+		username,
+		isadmin,
+		ID,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func ReadUsers(db sqlx.Ext) (*UsersArray, error) {
 
 	usersArray := make([]*Users, 0)
 	var ID int64
@@ -89,5 +110,7 @@ func ReadUsers(db sqlx.Ext) ([]*Users, error) {
 		})
 
 	}
-	return usersArray, nil
+	return &UsersArray{
+		UsersArray: usersArray,
+	}, nil
 }
