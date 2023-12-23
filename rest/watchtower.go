@@ -65,6 +65,9 @@ func Routes() {
 	// Login route
 	r.Post("/login", newWatchtower.Login)
 
+	// Register route
+	r.Post("/register", newWatchtower.RegisterUser)
+
 	// add water level history
 	r.Post("/history", newWatchtower.AddWaterLevelHistory)
 
