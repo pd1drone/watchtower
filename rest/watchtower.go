@@ -74,6 +74,9 @@ func Routes() {
 	// get water level history
 	r.Get("/getHistory", newWatchtower.GetWaterLevelHistory)
 
+	// get water level history
+	r.Get("/waterlvl", newWatchtower.GetWaterLevelRealTimeData)
+
 	// CRUD USERS
 	r.Get("/users", newWatchtower.ReadUsers)
 	r.Post("/users", newWatchtower.CreateUsers)
